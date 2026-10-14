@@ -1,26 +1,98 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy-950: #050814;
+  --navy-900: #08111f;
+  --navy-800: #0d1a30;
+  --navy-700: #13243f;
+  --cyan: #22d3ee;
+  --cyan-soft: #67e8f9;
+  --blue: #3b9bff;
+  --gold: #f5c56b;
+  --ink: #e8eefc;
+  --muted: #93a4c7;
+  --line: rgba(103, 232, 249, 0.16);
+  --background: var(--navy-950);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-source-serif);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100%;
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(1200px 600px at 12% -10%, rgba(34, 211, 238, 0.12), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(59, 155, 255, 0.1), transparent 50%),
+    linear-gradient(rgba(148, 183, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 183, 255, 0.04) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 35%, transparent 85%);
+  z-index: -1;
+}
+
+h1,
+h2,
+h3,
+.font-serif {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.katex-display {
+  margin: 1.1rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.katex {
+  font-size: 1.08em;
+  color: #dbeafe;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(103, 232, 249, 0.22);
+  border-radius: 999px;
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.28);
 }
