@@ -19,8 +19,10 @@ export function Sidebar({
       <div
         className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden ${open ? "block" : "hidden"}`}
         onClick={onClose}
+        aria-hidden
       />
       <aside
+        aria-label="Main navigation"
         className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-cyan-100/10 bg-[#070d1b] px-4 py-5 transition-transform lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="mb-8 flex items-center justify-between px-2">

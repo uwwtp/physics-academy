@@ -18,6 +18,8 @@ export function Equation({ latex, display = false, className }: EquationProps) {
   return (
     <span
       className={className}
+      role="math"
+      aria-label={latex}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

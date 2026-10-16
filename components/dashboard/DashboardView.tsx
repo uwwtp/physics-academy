@@ -26,7 +26,7 @@ export function DashboardView() {
       getLesson(progress.currentLesson.moduleId, progress.currentLesson.lessonId)) ||
     getFirstPublishedLesson();
     const streak = ready
-    ? computeStreak(progress.visitDates, new Date().toISOString().slice(0, 10))
+    ? computeStreak(progress.visitDates, progress.lastVisitedAt?.slice(0, 10) ?? "")
     : 0;
   const mastery = ready ? masteryScore(progress) : 0;
   const completion = ready ? overallCompletion(progress) : 0;

@@ -41,7 +41,7 @@ export function ProgressView() {
         <Card className="p-5">
           <p className="text-xs uppercase tracking-wider text-slate-500">Streak</p>
           <p className="mt-2 font-serif text-3xl text-white">
-            {computeStreak(progress.visitDates, new Date().toISOString().slice(0, 10))} days
+            {computeStreak(progress.visitDates, progress.lastVisitedAt?.slice(0, 10) ?? "")} days
           </p>
         </Card>
       </div>
@@ -55,10 +55,10 @@ export function ProgressView() {
         </p>
         {accuracy !== null ? <div className="mt-4"><ProgressBar value={accuracy} /></div> : null}
         <Link
-          href="/library/kinematics/position-velocity-acceleration"
+          href="/library/algebra-foundations/symbols-and-substitution"
           className="mt-4 inline-block text-sm text-cyan-300"
         >
-          Practice kinematics →
+          Practice symbols and substitution →
         </Link>
       </Card>
 

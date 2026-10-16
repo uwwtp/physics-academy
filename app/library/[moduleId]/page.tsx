@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { ModuleView } from "@/components/courses/ModuleView";
 import { getModule, modules } from "@/lib/courses";
 
-export function generateStaticParams() {
-  return modules.map((module) => ({ moduleId: module.id }));
+export async function generateStaticParams() {
+  return modules.map((course) => ({ moduleId: course.id }));
 }
 
 export async function generateMetadata({

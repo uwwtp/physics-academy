@@ -1,3 +1,4 @@
+import { algebraSymbolsLesson } from "@/lib/courses/algebra-symbols-lesson";
 import { kinematicsIntroLesson } from "@/lib/courses/kinematics-lesson";
 import type { Difficulty, Lesson, Module, SubjectId } from "@/lib/types";
 
@@ -54,14 +55,7 @@ export const modules: Module[] = [
       "Check an equation by comparing dimensions.",
     ],
     lessons: [
-      outlinedLesson(
-        "algebra-foundations",
-        "symbols-and-substitution",
-        "Symbols and Substitution",
-        "Treat letters as quantities with units, not as mysteries.",
-        25,
-        ["Substitute numerical values only after rearranging.", "Track units through every step."],
-      ),
+      algebraSymbolsLesson,
       outlinedLesson(
         "algebra-foundations",
         "solving-equations",

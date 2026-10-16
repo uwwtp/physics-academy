@@ -22,6 +22,21 @@ function isProgress(value: unknown): value is LearningProgress {
   );
 }
 
+function normalizeProgress(value: LearningProgress): LearningProgress {
+  return {
+    ...emptyProgress(),
+    ...value,
+    quizScores: value.quizScores ?? {},
+    quizAttempts: value.quizAttempts.map((attempt) => ({
+      ...attempt,
+      submitted:
+        typeof attempt.submitted === "number" && !Number.isFinite(attempt.submitted)
+          ? ""
+          : (attempt.submitted ?? ""),
+    })),
+  };
+}
+
 export const localProgressRepository: ProgressRepository = {
   load() {
     if (!isBrowser()) return emptyProgress();
@@ -29,7 +44,7 @@ export const localProgressRepository: ProgressRepository = {
       const raw = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
       if (!raw) return emptyProgress();
       const parsed: unknown = JSON.parse(raw);
-      return isProgress(parsed) ? parsed : emptyProgress();
+      return isProgress(parsed) ? normalizeProgress(parsed) : emptyProgress();
     } catch {
       return emptyProgress();
     }

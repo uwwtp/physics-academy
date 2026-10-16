@@ -53,14 +53,31 @@ export function overallCompletion(progress: LearningProgress) {
   return Math.round((progress.completedLessons.length / total) * 100);
 }
 
-export function recordVisit(progress: LearningProgress, now: Date = new Date()): LearningProgress {
-  const today = now.toISOString().slice(0, 10);
+export function safeIsoTimestamp(value?: Date | string | null): string {
+  if (typeof value === "string") {
+    const parsed = new Date(value);
+    if (Number.isFinite(parsed.getTime())) return parsed.toISOString();
+  }
+  if (value instanceof Date && Number.isFinite(value.getTime())) {
+    return value.toISOString();
+  }
+  const now = new Date();
+  if (Number.isFinite(now.getTime())) return now.toISOString();
+  return "1970-01-01T00:00:00.000Z";
+}
+
+export function recordVisit(
+  progress: LearningProgress,
+  now?: Date | string | null,
+): LearningProgress {
+  const iso = safeIsoTimestamp(now);
+  const today = iso.slice(0, 10);
   const visitDates = progress.visitDates.includes(today)
     ? progress.visitDates
     : [...progress.visitDates, today];
   return {
     ...progress,
     visitDates,
-    lastVisitedAt: now.toISOString(),
+    lastVisitedAt: iso,
   };
 }

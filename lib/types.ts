@@ -19,7 +19,29 @@ export type NumericalQuestion = {
   unit: string;
   significantFigures?: number;
   explanation: string;
+  topic?: string;
+  hints?: { title: string; body: string }[];
 };
+
+export type MultipleChoiceOption = {
+  id: string;
+  label: string;
+};
+
+export type QuizQuestion =
+  | (NumericalQuestion & { kind?: "numerical" })
+  | {
+      id: string;
+      kind: "multiple-choice";
+      prompt: string;
+      formula?: string;
+      options: MultipleChoiceOption[];
+      answer: string;
+      explanation: string;
+      topic: string;
+    };
+
+export type InteractiveDemoId = "expression-evaluator" | "formula-substitution";
 
 export type WorkedExample = {
   title: string;
@@ -34,12 +56,18 @@ export type LessonSection = {
   paragraphs: string[];
   equations?: string[];
   hints?: { title: string; body: string }[];
+  demo?: InteractiveDemoId;
+  mistakes?: { mistake: string; correction: string }[];
 };
 
 export type LessonContent = {
   sections: LessonSection[];
-  example: WorkedExample;
-  questions: NumericalQuestion[];
+  example?: WorkedExample;
+  examples?: WorkedExample[];
+  questions?: NumericalQuestion[];
+  practice?: NumericalQuestion[];
+  quiz?: QuizQuestion[];
+  summary?: string[];
 };
 
 export type Lesson = {

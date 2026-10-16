@@ -3,10 +3,10 @@ import { notFound } from "next/navigation";
 import { LessonView } from "@/components/lesson/LessonView";
 import { getLesson, modules } from "@/lib/courses";
 
-export function generateStaticParams() {
-  return modules.flatMap((module) =>
-    module.lessons.map((lesson) => ({
-      moduleId: module.id,
+export async function generateStaticParams() {
+  return modules.flatMap((course) =>
+    course.lessons.map((lesson) => ({
+      moduleId: course.id,
       lessonId: lesson.id,
     })),
   );

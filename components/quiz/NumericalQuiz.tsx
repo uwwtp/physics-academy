@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { CheckCircle2, RotateCcw, XCircle } from "lucide-react";
 import { Equation } from "@/components/math/Equation";
 import { Card } from "@/components/ui/Card";
+import { parseStudentNumber } from "@/lib/math/parse-number";
 import { useProgress } from "@/lib/progress/context";
 import type { NumericalQuestion } from "@/lib/types";
 
@@ -30,7 +31,7 @@ export function NumericalQuiz({ questions }: { questions: NumericalQuestion[] })
     const next: Record<string, boolean> = {};
     for (const question of questions) {
       const raw = values[question.id];
-      const submitted = Number.parseFloat(raw ?? "");
+      const submitted = parseStudentNumber(raw ?? "");
       const correct = Number.isFinite(submitted) && isCorrect(submitted, question);
       next[question.id] = correct;
       recordQuiz({
@@ -91,7 +92,8 @@ export function NumericalQuiz({ questions }: { questions: NumericalQuestion[] })
                       [question.id]: event.target.value,
                     }))
                   }
-                  inputMode="decimal"
+                  inputMode="text"
+                  autoComplete="off"
                   disabled={checked}
                   placeholder="Answer"
                   className="w-36 rounded-lg border border-cyan-100/15 bg-[#07101e] px-3 py-2 text-sm text-white outline-none ring-cyan-400/40 placeholder:text-slate-500 focus:ring-2 disabled:opacity-70"

@@ -26,7 +26,11 @@ function withDefaultCurrent(progress: LearningProgress): LearningProgress {
 function hydrate() {
   if (didHydrate || typeof window === "undefined") return;
   didHydrate = true;
-  snapshot = withDefaultCurrent(recordVisit(progressRepository.load()));
+  try {
+    snapshot = withDefaultCurrent(recordVisit(progressRepository.load()));
+  } catch {
+    snapshot = withDefaultCurrent(emptyProgress());
+  }
   progressRepository.save(snapshot);
 }
 
