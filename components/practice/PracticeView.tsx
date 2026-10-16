@@ -19,6 +19,16 @@ export function PracticeView() {
       </header>
 
       <div className="grid gap-4 md:grid-cols-2">
+        <Link href="/library/algebra-foundations/quadratic-equations">
+          <Card className="h-full p-5 transition hover:border-cyan-300/25">
+            <p className="text-xs uppercase tracking-wider text-cyan-300">Lesson</p>
+            <h2 className="mt-2 font-serif text-2xl text-white">Quadratic equations</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Parabolas, factorising, the formula, and projectile height as a quadratic in time.
+            </p>
+            <p className="mt-4 text-sm text-cyan-300">Open the quadratic lesson →</p>
+          </Card>
+        </Link>
         <Link href="/library/algebra-foundations/solving-equations">
           <Card className="h-full p-5 transition hover:border-cyan-300/25">
             <p className="text-xs uppercase tracking-wider text-cyan-300">Lesson</p>

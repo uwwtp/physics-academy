@@ -178,9 +178,9 @@ export function MarkedQuiz({
       <p className="text-xs uppercase tracking-[0.22em] text-cyan-300">Assessment</p>
       <h2 className="mt-1 font-serif text-2xl text-white">Marked quiz</h2>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-        Ten questions. Answer them all, then submit for a score and a topic
-        breakdown. Numerical answers use the stated tolerance. A leading minus
-        sign is allowed.
+        {questions.length} questions. Answer them all, then submit for a score
+        and a topic breakdown. Numerical answers use the stated tolerance. A
+        leading minus sign is allowed.
       </p>
       {saved ? (
         <p className="mt-3 text-sm text-cyan-200">

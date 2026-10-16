@@ -6,11 +6,31 @@ import { Hint } from "@/components/lesson/Hint";
 import { Equation } from "@/components/math/Equation";
 import { Card } from "@/components/ui/Card";
 import { parseStudentNumber } from "@/lib/math/parse-number";
+import { rootsMatch } from "@/lib/math/quadratic";
 import { useProgress } from "@/lib/progress/context";
 import type { NumericalQuestion } from "@/lib/types";
 
-function matches(submitted: number, question: NumericalQuestion) {
-  return Math.abs(submitted - question.answer) <= question.tolerance;
+function expectedList(question: NumericalQuestion) {
+  return question.answers && question.answers.length > 1 ? question.answers : [question.answer];
+}
+
+function isMultiRoot(question: NumericalQuestion) {
+  return Boolean(question.answers && question.answers.length > 1);
+}
+
+function expectedLabel(question: NumericalQuestion) {
+  const values = expectedList(question);
+  const joined = values.join(" and ");
+  return question.unit ? `${joined} ${question.unit}` : joined;
+}
+
+function matches(question: NumericalQuestion, fields: string[]) {
+  const expected = expectedList(question);
+  const submitted = fields.map((field) => parseStudentNumber(field));
+  if (expected.length === 1) {
+    return Number.isFinite(submitted[0]) && Math.abs(submitted[0] - expected[0]) <= question.tolerance;
+  }
+  return rootsMatch(submitted, expected, question.tolerance);
 }
 
 export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
@@ -21,28 +41,43 @@ export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
 
   const done = questions.filter((question) => checked[question.id]).length;
 
+  function fieldKey(id: string, index: number) {
+    return index === 0 ? id : `${id}::${index}`;
+  }
+
+  function fieldsFor(question: NumericalQuestion) {
+    return expectedList(question).map((_, index) => values[fieldKey(question.id, index)] ?? "");
+  }
+
   function checkOne(question: NumericalQuestion) {
-    const submitted = parseStudentNumber(values[question.id] ?? "");
-    const ok = Number.isFinite(submitted) && matches(submitted, question);
+    const fields = fieldsFor(question);
+    const ok = matches(question, fields);
+    const first = parseStudentNumber(fields[0] ?? "");
     setChecked((current) => ({ ...current, [question.id]: true }));
     setCorrect((current) => ({ ...current, [question.id]: ok }));
     recordQuiz({
       questionId: question.id,
-      submitted: Number.isFinite(submitted) ? submitted : Number.NaN,
+      submitted: Number.isFinite(first) ? first : Number.NaN,
       correct: ok,
     });
   }
 
-  function retryOne(id: string) {
-    setValues((current) => ({ ...current, [id]: "" }));
+  function retryOne(question: NumericalQuestion) {
+    setValues((current) => {
+      const next = { ...current };
+      expectedList(question).forEach((_, index) => {
+        delete next[fieldKey(question.id, index)];
+      });
+      return next;
+    });
     setChecked((current) => {
       const next = { ...current };
-      delete next[id];
+      delete next[question.id];
       return next;
     });
     setCorrect((current) => {
       const next = { ...current };
-      delete next[id];
+      delete next[question.id];
       return next;
     });
   }
@@ -66,6 +101,7 @@ export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
         {questions.map((question, index) => {
           const isChecked = Boolean(checked[question.id]);
           const isCorrect = Boolean(correct[question.id]);
+          const multi = isMultiRoot(question);
           return (
             <li key={question.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
               <p className="text-sm font-medium text-slate-100">
@@ -79,6 +115,7 @@ export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
               <p className="mt-2 text-xs text-slate-500">
                 Tolerance ±{question.tolerance}
                 {question.unit ? ` ${question.unit}` : ""}
+                {multi ? " · both roots required" : ""}
               </p>
               {question.hints?.map((hint) => (
                 <div key={hint.title} className="mt-3">
@@ -86,21 +123,28 @@ export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
                 </div>
               ))}
               <div className="mt-3 flex flex-wrap items-center gap-2">
-                <input
-                  value={values[question.id] ?? ""}
-                  onChange={(event) =>
-                    setValues((current) => ({
-                      ...current,
-                      [question.id]: event.target.value,
-                    }))
-                  }
-                  inputMode="text"
-                  autoComplete="off"
-                  aria-label={`Answer to question ${index + 1}`}
-                  disabled={isChecked}
-                  placeholder="Answer"
-                  className="min-h-11 w-36 rounded-lg border border-cyan-100/15 bg-[#07101e] px-3 py-2 text-sm text-white outline-none ring-cyan-400/40 placeholder:text-slate-500 focus:ring-2 disabled:opacity-70"
-                />
+                {expectedList(question).map((_, slot) => (
+                  <input
+                    key={fieldKey(question.id, slot)}
+                    value={values[fieldKey(question.id, slot)] ?? ""}
+                    onChange={(event) =>
+                      setValues((current) => ({
+                        ...current,
+                        [fieldKey(question.id, slot)]: event.target.value,
+                      }))
+                    }
+                    inputMode="text"
+                    autoComplete="off"
+                    aria-label={
+                      multi
+                        ? `Root ${slot + 1} of question ${index + 1}`
+                        : `Answer to question ${index + 1}`
+                    }
+                    disabled={isChecked}
+                    placeholder={multi ? `Root ${slot + 1}` : "Answer"}
+                    className="min-h-11 w-36 rounded-lg border border-cyan-100/15 bg-[#07101e] px-3 py-2 text-sm text-white outline-none ring-cyan-400/40 placeholder:text-slate-500 focus:ring-2 disabled:opacity-70"
+                  />
+                ))}
                 {question.unit ? (
                   <span className="text-sm text-slate-400">{question.unit}</span>
                 ) : null}
@@ -115,7 +159,7 @@ export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => retryOne(question.id)}
+                    onClick={() => retryOne(question)}
                     className="inline-flex items-center gap-1 rounded-lg border border-cyan-200/20 px-3 py-2 text-sm text-cyan-100 hover:bg-white/5"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />
@@ -129,8 +173,7 @@ export function PracticeSet({ questions }: { questions: NumericalQuestion[] }) {
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-sm text-rose-300">
-                      <XCircle className="h-4 w-4" /> Expected {question.answer}
-                      {question.unit ? ` ${question.unit}` : ""}
+                      <XCircle className="h-4 w-4" /> Expected {expectedLabel(question)}
                     </span>
                   )
                 ) : null}

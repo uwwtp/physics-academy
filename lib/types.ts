@@ -15,6 +15,8 @@ export type NumericalQuestion = {
   prompt: string;
   formula?: string;
   answer: number;
+  /** When set (length ≥ 2), every listed value must be entered; order does not matter. */
+  answers?: number[];
   tolerance: number;
   unit: string;
   significantFigures?: number;
@@ -45,7 +47,9 @@ export type InteractiveDemoId =
   | "expression-evaluator"
   | "formula-substitution"
   | "balance-scale"
-  | "equation-checker";
+  | "equation-checker"
+  | "parabola-explorer"
+  | "projectile-motion";
 
 export type WorkedExample = {
   title: string;

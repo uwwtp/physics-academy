@@ -1,3 +1,4 @@
+import { algebraQuadraticLesson } from "@/lib/courses/algebra-quadratic-lesson";
 import { algebraSolvingLesson } from "@/lib/courses/algebra-solving-lesson";
 import { algebraSymbolsLesson } from "@/lib/courses/algebra-symbols-lesson";
 import { kinematicsIntroLesson } from "@/lib/courses/kinematics-lesson";
@@ -58,14 +59,7 @@ export const modules: Module[] = [
     lessons: [
       algebraSymbolsLesson,
       algebraSolvingLesson,
-      outlinedLesson(
-        "algebra-foundations",
-        "quadratic-equations",
-        "Quadratic Equations",
-        "Isolate unknowns when a t² term appears in kinematic equations.",
-        35,
-        ["Solve ax² + bx + c = 0.", "Use the quadratic formula in a physics setting."],
-      ),
+      algebraQuadraticLesson,
       outlinedLesson(
         "algebra-foundations",
         "scientific-notation",

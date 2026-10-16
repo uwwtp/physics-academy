@@ -3,6 +3,7 @@ import { subjects } from "@/lib/subjects";
 import type { Lesson, Module, SubjectId } from "@/lib/types";
 
 export { modules } from "@/lib/courses/catalog";
+export { algebraQuadraticLesson } from "@/lib/courses/algebra-quadratic-lesson";
 export { algebraSolvingLesson } from "@/lib/courses/algebra-solving-lesson";
 export { algebraSymbolsLesson } from "@/lib/courses/algebra-symbols-lesson";
 export { kinematicsIntroLesson } from "@/lib/courses/kinematics-lesson";
