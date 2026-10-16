@@ -41,7 +41,11 @@ export type QuizQuestion =
       topic: string;
     };
 
-export type InteractiveDemoId = "expression-evaluator" | "formula-substitution";
+export type InteractiveDemoId =
+  | "expression-evaluator"
+  | "formula-substitution"
+  | "balance-scale"
+  | "equation-checker";
 
 export type WorkedExample = {
   title: string;
